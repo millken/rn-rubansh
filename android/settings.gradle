@@ -1,0 +1,3 @@
+rootProject.name = 'rnrubansh'
+
+include ':app'
