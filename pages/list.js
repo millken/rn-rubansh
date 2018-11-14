@@ -1,54 +1,95 @@
 import React from 'react';
-import { View, Text, FlatList, StatusBar,
+import {
+  View, Text, FlatList, StatusBar,
   StyleSheet,
   Image
- } from 'react-native';
- import ImageButton from '../components/ImageButton'
+} from 'react-native';
+import ImageButton from '../components/ImageButton'
+import { getProducts } from '../libs/service'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    paddingTop:StatusBar.currentHeight, //保证显示区域
+    paddingTop: StatusBar.currentHeight, //保证显示区域
   },
   statusBar: {
-    height:350,
+    height: 350,
+  },
+  image: {
+    marginBottom: 7
   }
 })
 class List extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: false,
+      data: [],
+      error: null,
+      refreshing: false
+    };
+  }
+
+
+  //render 完后调用
+  componentDidMount() {
+    this.makeRemoteRequest();
+  }
+
+  makeRemoteRequest() {
+    console.log('makeRemoteRequest getProducts')
+    this.setState({ loading: true });
+    getProducts().then(res => {
+      if (res.status) { //成功时
+        this.setState({
+          data: [ ...res.data],
+          error: res.error || null,
+          loading: false
+        });
+        console.log(this.state.data)
+      }
+    }).catch(err => console.log(err))
+  }
+
   _pressItem(id) {
     alert(id);
   };
-  _renderItem = ({item}) => {
+  _renderItem = ({ item }) => {
     console.log(item)
     return (<ImageButton
       //onPress={this._onPressImage}
       source={require('../assets/dc6b3900fc3e5ae6.png')}
-      style={{ width: '100%'}}
+      style={{ width: '100%' }}
     />)
   };
   render() {
-    console.log("StatusBar.currentHeight=",StatusBar.currentHeight)
+    console.log("StatusBar.currentHeight=", StatusBar.currentHeight)
     return (
       <View style={styles.container}>
         <StatusBar
-        backgroundColor='blue' //android设备设置背景色
-        translucent={true}
+          backgroundColor='blue' //android设备设置背景色
+          translucent={true}
           hidden={false} //隐藏
         />
         {/* <View style={styles.statusBar}>
       <Text>LFLFLFLF</Text>
         </View> */}
+
         <FlatList
-          data={[{ id:"1", image: '../assets/dc6b3900fc3e5ae6.png' }, { id:"2", image: '../assets/dc6b3900fc3e5ae6.png' }]}
+          data={this.state.data}
           renderItem={({ item }) => (
-          <ImageButton
-            onPress={this._pressItem.bind(this,item.id)}
-            source={require('../assets/dc6b3900fc3e5ae6.png')}
-            //style={{ width: '100%'}}
-          />
+            <ImageButton
+              //onPress={this._pressItem.bind(this, item.productID)}
+              onPress={() => this.props.navigation.navigate('Detail', {
+                productID: item.productID
+              })}
+              image={item.imageUrl}
+              style={styles.image}
+            />
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.productID.toString()}
         />
 
       </View>
