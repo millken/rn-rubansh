@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    paddingTop: StatusBar.currentHeight, //保证显示区域
+    //paddingTop: StatusBar.currentHeight, //保证显示区域
   },
   statusBar: {
     height: 350,
@@ -65,18 +65,8 @@ class List extends React.Component {
     />)
   };
   render() {
-    console.log("StatusBar.currentHeight=", StatusBar.currentHeight)
     return (
       <View style={styles.container}>
-        <StatusBar
-          backgroundColor='blue' //android设备设置背景色
-          translucent={true}
-          hidden={false} //隐藏
-        />
-        {/* <View style={styles.statusBar}>
-      <Text>LFLFLFLF</Text>
-        </View> */}
-
         <FlatList
           data={this.state.data}
           renderItem={({ item }) => (

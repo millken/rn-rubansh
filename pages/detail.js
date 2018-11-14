@@ -11,7 +11,7 @@ import {
 import TextButton from '../components/TextButton';
 import ImageScale from '../components/ImageScale';
 import Swiper from '../components/swiper';
-
+import { getProduct } from '../libs/service';
 
 const bannerImage = [
   "https://wx.rubansh.com/rubansh/b81a47f1253854bd.jpg",
@@ -33,15 +33,6 @@ class Detail extends React.Component {
   constructor(props) {
     super(props);
 
-    this.statusBar = {
-      animated: true,
-      hidden: false,
-      backgroundColor:'white',
-      translucent:false,
-      barStyle:'default',
-      networkActivityIndicatorVisible:false,
-      showHideTransition:'fade',
-  }
     this.state = {
       loading: false,
       data: [],
@@ -57,21 +48,34 @@ class Detail extends React.Component {
   componentDidMount() {
     const { navigation } = this.props;
     const productID = navigation.getParam('productID', 0);
-    console.log('prodcut=', productID)
+    console.log('productID=', productID)
+
+    this.setState({ loading: true });
+    getProduct({productID: productID}).then(res => {
+      if (res.status) { //成功时
+        let data = res.data || {}
+        this.setState({
+          data: data,
+          bannerImage: data.productImage || [],
+          detailImage: data.detailImage || [],
+          error: res.error || null,
+          loading: false
+        });
+        console.log(this.state.data)
+      }
+    }).catch(err => console.log(err))
   }
 
   render() {
     return (
       <View style={styles.container}>
-      <StatusBar
-                    animated={ this.statusBar.animated}
-                    hidden={ this.statusBar.hidden}
-                    backgroundColor={ this.statusBar.backgroundColor}
-                    translucent={ this.statusBar.translucent}
-                    barStyle={ this.statusBar.barStyle}
-                    networkActivityIndicatorVisible={ this.statusBar.networkActivityIndicatorVisible}
-                    showHideTransition={ this.statusBar.showHideTransition}
-                />
+<StatusBar
+          //backgroundColor='blue' //android设备设置背景色
+          translucent={true}
+          animated={true}//指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden  
+          hidden={false} //隐藏
+          barStyle={'light-content'} // enum('default', 'light-content', 'dark-content')   
+        />
         <ScrollView>
         <Swiper 
         style={styles.wrapper}
@@ -87,14 +91,15 @@ class Detail extends React.Component {
           }
       </Swiper>
           <View style={{flex:1,flexDirection:'row',justifyContent: 'flex-end', marginLeft:10,marginRight:10, height:40, paddingTop:10}}>
-          <Text style={{ width:'80%'}}>Detaidls Screen</Text>
-          <Text style={{color:'red', width:70}}>￥ 2.33</Text>
+          <Text style={{ width:'80%'}}>{this.state.data.name || ''}</Text>
+          <Text style={{color:'red', width:70}}>￥ {this.state.data.price || ''}</Text>
           </View>
           <View>
           {
             this.state.detailImage.map(( uri , index) => {
               return (
-                <ImageScale key={index} uri={uri} />
+                <ImageScale 
+                key={index} uri={uri} />
               );
             })
           }
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    marginTop: StatusBar.currentHeight,
+    //paddingTop: StatusBar.currentHeight, 
   },
   buttomArea: {
     flex: 1,

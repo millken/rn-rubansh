@@ -6,6 +6,7 @@ let getProducts = function(params = {}){
     return http.get(api.getProducts, params);
 };
 
-let a = false;
+let getProduct = (params = {}) =>  http.get(api.getProduct, params);
 
-export {getProducts, a};
+
+export {getProducts, getProduct};

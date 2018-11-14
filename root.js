@@ -19,7 +19,7 @@ const root = createStackNavigator({
 {
   mode: 'modal',
   headerMode: 'none',
-  initialRouteName: 'Detail',
+  initialRouteName: 'Home',
 });
 
 export default root

@@ -10,9 +10,7 @@ let screenWidth = Dimensions.get('window').width;
 
 export default class ImageScale extends React.Component {
   static defaultProps = {
-    onPress() {},
     disabled: false,
-    resizeMode: "contain"
   }
   constructor(props: {}) {
     super(props);
@@ -25,7 +23,7 @@ export default class ImageScale extends React.Component {
   componentDidMount() {
     
     Image.getSize(this.props.uri, (width, height) => {
-         height = screenWidth * height / width
+         height = Math.floor(screenWidth / width * height)
          this.setState({width: screenWidth, height: height});
     }, (err)=>{
       console.log('getSize err', err)
@@ -36,7 +34,8 @@ export default class ImageScale extends React.Component {
   render() {
     return (
     <Image style={[this.props.style, {width: this.state.width, height: this.state.height}]}
-           source={{uri: this.props.uri}} />
+           source={{uri: this.props.uri}} 
+           />
     );
   }
 }

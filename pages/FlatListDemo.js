@@ -1,3 +1,4 @@
+/*
 import React, { Component } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { List, ListItem, SearchBar } from "react-native-elements";
@@ -126,3 +127,4 @@ class FlatListDemo extends Component {
 }
 
 export default FlatListDemo;
+*/
