@@ -3,6 +3,7 @@ import React from 'react';
 import Home from './pages/home';
 import List from './pages/list'
 import Detail from './pages/detail'
+import Custom from './pages/custom'
 import { createStackNavigator } from 'react-navigation';
 
 const root = createStackNavigator({
@@ -15,11 +16,14 @@ const root = createStackNavigator({
   Detail: {
     screen: Detail,
   },
+  Custom: {
+    screen: Custom,
+  },
 },
 {
   mode: 'modal',
   headerMode: 'none',
-  initialRouteName: 'Home',
+  initialRouteName: 'Custom',
 });
 
 export default root

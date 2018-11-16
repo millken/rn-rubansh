@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, FlatList, StatusBar,
+  View, Text, FlatList,
   StyleSheet,
   Image
 } from 'react-native';
@@ -12,9 +12,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     //paddingTop: StatusBar.currentHeight, //保证显示区域
-  },
-  statusBar: {
-    height: 350,
   },
   image: {
     marginBottom: 7

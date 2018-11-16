@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  StatusBar,
   ImageBackground
  } from 'react-native';
 import TextButton from '../components/TextButton';
@@ -28,6 +27,7 @@ const detailImage = [
  "https://wx.rubansh.com/rubansh/b6016aef0f447e42.jpg"
 ]
 
+
 class Detail extends React.Component {
 
   constructor(props) {
@@ -38,11 +38,13 @@ class Detail extends React.Component {
       data: [],
       error: null,
       refreshing: false,
-      bannerImage: bannerImage,
-      detailImage: detailImage,
+      bannerImage: null,
+      detailImage: null,
     };
   }
 
+
+  componentWillMount() {}
 
   //render 完后调用
   componentDidMount() {
@@ -55,7 +57,9 @@ class Detail extends React.Component {
       if (res.status) { //成功时
         let data = res.data || {}
         this.setState({
-          data: data,
+          productID:productID,
+          name: data.name,
+          price: data.price,
           bannerImage: data.productImage || [],
           detailImage: data.detailImage || [],
           error: res.error || null,
@@ -69,30 +73,30 @@ class Detail extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-<StatusBar
-          //backgroundColor='blue' //android设备设置背景色
-          translucent={true}
-          animated={true}//指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden  
-          hidden={false} //隐藏
-          barStyle={'light-content'} // enum('default', 'light-content', 'dark-content')   
-        />
-        <ScrollView>
+      {
+        this.state.bannerImage === null ?
+        <View />
+        :
+        (
+        <ScrollView> 
         <Swiper 
+        loop={true}
         style={styles.wrapper}
         showsButtons={true}
         autoplay={true}
         >
         {
-            this.state.bannerImage.map(( uri , index) => {
+this.state.bannerImage.map(( uri , index) => {
               return (
                 <ImageBackground key={index} source={{uri: uri}} style={{ width: '100%', height: '100%' }} />
               );
             })
           }
       </Swiper>
+        
           <View style={{flex:1,flexDirection:'row',justifyContent: 'flex-end', marginLeft:10,marginRight:10, height:40, paddingTop:10}}>
-          <Text style={{ width:'80%'}}>{this.state.data.name || ''}</Text>
-          <Text style={{color:'red', width:70}}>￥ {this.state.data.price || ''}</Text>
+          <Text style={{ width:'80%'}}>{this.state.name || ''}</Text>
+          <Text style={{color:'red', width:70}}>￥ {this.state.price || ''}</Text>
           </View>
           <View>
           {
@@ -104,17 +108,23 @@ class Detail extends React.Component {
             })
           }
           </View>
+        
         </ScrollView>
+        )
+      }
         <View style={styles.buttomArea}>
           <TextButton
            onPress={() => this.props.navigation.navigate('List')}
             style={styles.homeButton}
-            textStyle={{textAlign:'center',color:'#161616',fontSize: 18,paddingTop:10}}
+            buttonStyle={{textAlign:'center',color:'#161616',fontSize: 18,paddingTop:10}}
             title="返回首页"
           />
           <TextButton
             style={styles.buyButton}
-            textStyle={{textAlign:'center',color:'#fff',fontSize: 18,paddingTop:10}}
+            onPress={() => this.props.navigation.navigate('Custom', {
+              productID: this.state.productID
+            })}
+            buttonStyle={{textAlign:'center',color:'#fff',fontSize: 18,paddingTop:10}}
             title="立即定制"
           />
         </View>
@@ -127,7 +137,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    //paddingTop: StatusBar.currentHeight, 
   },
   buttomArea: {
     flex: 1,

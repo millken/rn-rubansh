@@ -8,6 +8,7 @@ export default(config => {
     // example api
     'getProducts': '/h5v2/getProducts',
     'getProduct': '/h5v2/getProduct',  
+    'getProductCustomOption': '/h5v2/getProductCustomOption'
 });
 
 /*
